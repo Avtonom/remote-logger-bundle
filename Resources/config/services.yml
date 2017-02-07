@@ -1,0 +1,31 @@
+parameters:
+    avtonom_remote_logger.token: ~
+    avtonom_remote_logger.remote_host: ~
+    avtonom_remote_logger.use_ssl: ~
+    avtonom_remote_logger.level: ~
+    avtonom_remote_logger.bubble: ~
+    avtonom_remote_logger.service: ~
+    avtonom_remote_logger.appname: ~
+    avtonom_remote_logger.environment: "%kernel.environment%"
+    avtonom_remote_logger.writing_timeout: 10
+
+services:
+    avtonom_remote_logger.monolog.handler:
+        class: Avtonom\RemoteLoggerBundle\Handler\AvtonomRemoteHandler
+        arguments:
+          - "%avtonom_remote_logger.token%"
+          - "%avtonom_remote_logger.remote_host%"
+          - "%avtonom_remote_logger.use_ssl%"
+          - "%avtonom_remote_logger.level%"
+          - "%avtonom_remote_logger.bubble%"
+        calls:
+            - [setService, ["%avtonom_remote_logger.service%"]]
+            - [setAppName, ["%avtonom_remote_logger.appname%"]]
+            - [setEnvironment, ["%avtonom_remote_logger.environment%"]]
+            - [setWritingTimeout, ["%avtonom_remote_logger.writing_timeout%"]]
+
+    avtonom_remote_logger.processor.session_request:
+            class: Avtonom\RemoteLoggerBundle\Processor\SessionRequestProcessor
+            arguments:  [ @session ]
+            tags:
+                - { name: monolog.processor, method: processRecord, handler: avtonom_remote_logger }
