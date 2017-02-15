@@ -5,7 +5,7 @@ parameters:
     avtonom_remote_logger.level: ~
     avtonom_remote_logger.bubble: ~
     avtonom_remote_logger.service: ~
-    avtonom_remote_logger.appname: ~
+    avtonom_remote_logger.appname: web
     avtonom_remote_logger.environment: "%kernel.environment%"
     avtonom_remote_logger.writing_timeout: 10
 

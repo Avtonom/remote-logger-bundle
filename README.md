@@ -65,7 +65,7 @@ parameters:
     avtonom_remote_logger.level: ~ # [OPTIONAL] (def: 100)
     avtonom_remote_logger.bubble: ~ # [OPTIONAL] (def: true)
     avtonom_remote_logger.service: ~ # [OPTIONAL] mobile, my_site.com (def: host)
-    avtonom_remote_logger.appname: ~ # [OPTIONAL] cron | js | site | ...
+    avtonom_remote_logger.appname: ~ # [OPTIONAL] cron | js | web | ... (def: web)
     avtonom_remote_logger.environment: ~ # [OPTIONAL] dev | prod | ...
     avtonom_remote_logger.writing_timeout: 10 # [OPTIONAL] (def: 10) Write timed-out, data sent for * seconds
 
