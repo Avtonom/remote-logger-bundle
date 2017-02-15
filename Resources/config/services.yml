@@ -1,7 +1,7 @@
 parameters:
     avtonom_remote_logger.token: ~
     avtonom_remote_logger.remote_host: ~
-    avtonom_remote_logger.use_ssl: ~
+    avtonom_remote_logger.use_ssl: true
     avtonom_remote_logger.level: ~
     avtonom_remote_logger.bubble: ~
     avtonom_remote_logger.service: ~
