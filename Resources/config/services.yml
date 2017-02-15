@@ -26,6 +26,6 @@ services:
 
     avtonom_remote_logger.processor.session_request:
             class: Avtonom\RemoteLoggerBundle\Processor\SessionRequestProcessor
-            arguments:  [ @session ]
+            arguments:  [ "@session" ]
             tags:
                 - { name: monolog.processor, method: processRecord, handler: avtonom_remote_logger }
