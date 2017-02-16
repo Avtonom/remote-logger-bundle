@@ -65,6 +65,9 @@ class AvtonomRemoteHandler extends SocketHandler
 
         parent::__construct($endpoint, $level, $bubble);
 
+        if($token && strlen($token) != 32){
+            throw new MissingExtensionException('Incorrect RemoteLogger token');
+        }
         $this->token = $token;
         $this->remoteHost = $remoteHost;
     }
