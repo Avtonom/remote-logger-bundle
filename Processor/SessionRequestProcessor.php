@@ -8,7 +8,7 @@ class SessionRequestProcessor
     private $session;
     private $sessionId;
     private $requestId;
-    private $_server;
+    private $_server = array();
     private $_get;
     private $_post;
 
@@ -41,10 +41,10 @@ class SessionRequestProcessor
                 } catch (\RuntimeException $e) {
                     $this->sessionId = '????????';
                 }
+                $this->_server = $this->getExtraValue();
             }
-            $this->requestId .= '-' . substr(uniqid(), -8);
+            $this->requestId = substr(uniqid(), -8);
         }
-        $this->_server = $this->getExtraValue();
 
 //        $this->_post = $this->clean($_POST);
 //        $this->_get = $this->clean($_GET);
