@@ -12,6 +12,18 @@ class SessionRequestProcessor
     private $_get;
     private $_post;
 
+    /**
+     * @var array
+     */
+    protected $extraFields = array(
+        'request_uri' => 'REQUEST_URI',
+        'request_host' => 'HTTP_HOST',
+        'verb' => 'REQUEST_METHOD',
+        'agent' => 'HTTP_USER_AGENT',
+        'http_referer' => 'HTTP_REFERER',
+        'fwd_for' => 'HTTP_X_FORWARDED_FOR',
+    );
+
     public function __construct(Session $session)
     {
         $this->session = $session;
@@ -25,34 +37,40 @@ class SessionRequestProcessor
             } else {
                 try {
                     $this->session->start();
-                    $this->sessionId = $this->session->getId();
+                    $this->sessionId = substr($this->session->getId(), 0, 8);
                 } catch (\RuntimeException $e) {
                     $this->sessionId = '????????';
                 }
             }
-            $this->requestId = substr(uniqid(), -8);
-            $this->_server = array(
-                'request' => (@$_SERVER['HTTP_HOST']) . '/' . (@$_SERVER['REQUEST_URI']),
-                'verb' => @$_SERVER['REQUEST_METHOD'],
-                'agent' => @$_SERVER['HTTP_USER_AGENT'],
-                'referer' => @$_SERVER['HTTP_REFERER'],
-                'fwd_for' => @$_SERVER['HTTP_X_FORWARDED_FOR']
-            );
-            $this->_post = $this->clean($_POST);
-            $this->_get = $this->clean($_GET);
+            $this->requestId .= '-' . substr(uniqid(), -8);
         }
+        $this->_server = $this->getExtraValue();
+
+//        $this->_post = $this->clean($_POST);
+//        $this->_get = $this->clean($_GET);
+
         if(!array_key_exists('extra', $record)){
             $record['extra'] = array();
         }
         $record['requestId'] = $this->requestId;
         $record['sessionId'] = $this->sessionId;
-        $record['extra']['request'] = $this->_server['request'];
-        $record['extra']['verb'] = $this->_server['verb'];
-        $record['extra']['agent'] = $this->_server['agent'];
-        $record['extra']['referer'] = $this->_server['referer'];
-        $record['extra']['fwd_for'] = $this->_server['fwd_for'];
-
+        $record['extra'] = array_merge($record['extra'], $this->_server);
         return $record;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getExtraValue()
+    {
+        $extra = array();
+        $serverData = $_SERVER;
+        foreach($this->extraFields as $extraName => $serverName) {
+            if(!empty($serverData[$serverName])){
+                $extra[$extraName] = $serverData[$serverName];
+            }
+        }
+        return $extra;
     }
 
     protected function clean($array)
