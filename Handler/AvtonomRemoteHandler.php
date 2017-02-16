@@ -7,9 +7,12 @@ use Monolog\Logger;
 use Monolog\Handler\MissingExtensionException;
 use Monolog\Handler\SocketHandler;
 use Monolog\Formatter\JsonFormatter;
+use Psr\Log\LoggerAwareTrait;
 
 class AvtonomRemoteHandler extends SocketHandler
 {
+    use LoggerAwareTrait;
+
     const REMOTE_URI = '/log';
     const REMOTE_URI_BATCH = '/log/batch';
 
@@ -156,8 +159,9 @@ class AvtonomRemoteHandler extends SocketHandler
                 @fread($res, 2048);
             }*/
             $this->closeSocket();
+            $this->logger->debug('Record count: '.sizeof($record));
         } catch (\UnexpectedValueException $e) {
-            //@todo local logging warning
+            $this->logger->error(__METHOD__.' Exception: '.$e->getMessage());
         }
     }
 

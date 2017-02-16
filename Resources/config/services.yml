@@ -23,9 +23,23 @@ services:
             - [setAppName, ["%avtonom_remote_logger.appname%"]]
             - [setEnvironment, ["%avtonom_remote_logger.environment%"]]
             - [setWritingTimeout, ["%avtonom_remote_logger.writing_timeout%"]]
+            - [setLogger, ["@avtonom_remote_logger.monolog.local.logger"]]
 
     avtonom_remote_logger.processor.session_request:
             class: Avtonom\RemoteLoggerBundle\Processor\SessionRequestProcessor
             arguments:  [ "@session" ]
+            public: false
             tags:
                 - { name: monolog.processor, method: processRecord, handler: avtonom_remote_logger }
+
+    avtonom_remote_logger.monolog.local.logger:
+        class: Symfony\Bridge\Monolog\Logger
+        arguments: [avtonom_remote_logger_local]
+        public: false
+        calls:
+            - [pushHandler, ["@avtonom_remote_logger.monolog.local.handler"]]
+
+    avtonom_remote_logger.monolog.local.handler:
+        class: Monolog\Handler\RotatingFileHandler
+        arguments: ["%kernel.logs_dir%/%kernel.environment%.remote_logger.log", 10, 100, false]
+        public: false
