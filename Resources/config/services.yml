@@ -34,10 +34,8 @@ services:
 
     avtonom_remote_logger.monolog.local.logger:
         class: Symfony\Bridge\Monolog\Logger
-        arguments: [avtonom_remote_logger_local]
+        arguments: [remote_logger, ["@avtonom_remote_logger.monolog.local.handler"]]
         public: false
-        calls:
-            - [pushHandler, ["@avtonom_remote_logger.monolog.local.handler"]]
 
     avtonom_remote_logger.monolog.local.handler:
         class: Monolog\Handler\RotatingFileHandler

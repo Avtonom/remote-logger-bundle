@@ -162,7 +162,7 @@ class AvtonomRemoteHandler extends SocketHandler
                 @fread($res, 2048);
             }*/
             $this->closeSocket();
-            $this->logger->debug('Record count: '.sizeof($record));
+            $this->logger->debug('w '.($this->isBatch ? 'b' : 's').': '.sizeof($record));
         } catch (\UnexpectedValueException $e) {
             $this->logger->error(__METHOD__.' Exception: '.$e->getMessage());
         }
@@ -170,6 +170,7 @@ class AvtonomRemoteHandler extends SocketHandler
 
     private function buildHeader($content)
     {
+        $strlen = strlen($content);
         if($this->isBatch){
             $header = "POST ".self::REMOTE_URI_BATCH." HTTP/1.1\r\n";
         } else {
@@ -177,9 +178,11 @@ class AvtonomRemoteHandler extends SocketHandler
         }
         $header .= "Host: ".$this->remoteHost."\r\n";
         $header .= "Content-Type: application/json\r\n";
-        $header .= "Content-Length: " . strlen($content) . "\r\n";
+        $header .= "Content-Length: " . $strlen . "\r\n";
 //        $header .= "Connection: close\r\n\r\n";
         $header .= "\r\n";
+
+        $this->logger->debug('h '.($this->isBatch ? 'b' : 's').': '.(strlen($header) + $strlen).' to '.$this->remoteHost);
 
         return $header;
     }
