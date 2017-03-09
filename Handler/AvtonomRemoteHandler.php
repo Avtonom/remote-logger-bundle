@@ -163,7 +163,7 @@ class AvtonomRemoteHandler extends SocketHandler
             }*/
             $this->closeSocket();
             $this->logger->debug('w '.($this->isBatch ? 'b' : 's').': '.sizeof($record));
-        } catch (\UnexpectedValueException $e) {
+        } catch (\Exception $e) {
             $this->logger->error(__METHOD__.' Exception: '.$e->getMessage());
         }
     }
